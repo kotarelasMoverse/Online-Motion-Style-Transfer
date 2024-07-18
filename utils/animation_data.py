@@ -120,7 +120,7 @@ def foot_contact_from_positions(positions, fid_l=(3, 4), fid_r=(7, 8)):
     for fid_index in [fid_l, fid_r]:
         foot_vel = (positions[1:, fid_index] - positions[:-1, fid_index]) ** 2  # [T - 1, 2, 3]
         foot_vel = np.sum(foot_vel, axis=-1)  # [T - 1, 2]
-        foot_contact = (foot_vel < velfactor).astype(np.float)
+        foot_contact = (foot_vel < velfactor).astype(float)
         feet_contact.append(foot_contact)
     feet_contact = np.concatenate(feet_contact, axis=-1)  # [T - 1, 4]
     feet_contact = np.concatenate((feet_contact[0:1].copy(), feet_contact), axis=0)
@@ -137,7 +137,7 @@ def phase_from_ft(foot_contact, is_debug=False):
     num_circles = 0
     circle_length = 0
     total_length = len(foot_contact)
-    ft = foot_contact[:, [0, 2]].astype(np.int)
+    ft = foot_contact[:, [0, 2]].astype(int)
     ft_start = np.zeros((total_length, 2))
     phases = np.zeros((total_length, 1))
 
@@ -370,7 +370,7 @@ class AnimationData:
         if skel is None:
             skel = Skel()
 
-        rotations /= np.sqrt(np.sum(rotations ** 2, axis=-1))[..., np.newaxis]
+        rotations /= np.sqrt(np.sum(rotations ** 2, axis=-1))[..., np.newaxis] # Normalize rotations by dividing with RMS
         global_positions = forward_rotations(skel, rotations, root_positions, trim=True)
         foot_contact = foot_contact_from_positions(global_positions, fid_l=skel.fid_l, fid_r=skel.fid_r)
         quaters, pivots = y_rotation_from_positions(global_positions, hips=skel.hips, sdrs=skel.sdrs)
@@ -380,7 +380,7 @@ class AnimationData:
         root_rotations = np.array(root_rotations).reshape((-1, 1, 4))  # [T, 1, 4]
         rotations[:, 0:1, :] = root_rotations
 
-        full = np.concatenate([rotations.reshape((len(rotations), -1)), root_positions, pivots, foot_contact], axis=-1)
+        full = np.concatenate([rotations.reshape((len(rotations), -1)), root_positions, pivots, foot_contact], axis=-1) # This is where the shape of the motion part of the .npz file comes from
         return cls(full, skel, frametime)
 
     @classmethod

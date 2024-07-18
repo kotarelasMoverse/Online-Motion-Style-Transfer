@@ -13,7 +13,7 @@ sys.path.insert(0, pjoin(BASEPATH, '..', '..'))
 
 from utils.animation_data import AnimationData
 from utils.load_skeleton import Skel
-from remove_fs import remove_fs, save_bvh_from_network_output
+from postprocess import remove_fs, save_bvh_from_network_output
 
 
 def pad_to_window(slice, window):
@@ -144,7 +144,7 @@ def generate_database_xia(bvh_path, output_path, window, window_step, dataset_co
 
     for i, item in enumerate(bvh_files):
         print('Processing %i of %i (%s)' % (i, len(bvh_files), item))
-        filename = item.split('/')[-1]
+        filename = os.path.split(item)[-1] # Extract the filename independent of OS. Originally was: item.split('/')[-1] 
         style, content_idx, _ = filename.split('_')
         content = content_namedict[int(content_idx) - 1]
         content_style = "%s_%s" % (content, style)
@@ -306,5 +306,13 @@ def main(args):
 
 if __name__ == '__main__':
     args = parse_args()
+    # Custom args
+    args.dataset = 'xia'
+    args.bvh_path = 'C:\\Users\\info\\Downloads\\data\\mocap_xia'
+    args.output_path = 'C:\\Users\\info\\Documents\\Kotarelas\\tmp' 
+    args.window = 24 
+    args.window_step = 4 
+    args.dataset_config = 'C:\\Users\\info\\Documents\\GitHub\\Online-Motion-Style-Transfer\\global_info\\xia_dataset.yml'
+    #
     main(args)
 

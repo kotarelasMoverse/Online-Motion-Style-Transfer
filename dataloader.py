@@ -61,7 +61,7 @@ class MotionDataset(Dataset):
             "style": self.styles[0].shape[-1],
             "content": self.contents[0].shape[-1],
             "contact": self.contacts[0].shape[-1],
-            "root": self.roots[0].shape[-1]
+            "root": self.roots[0].shape[-1] # maybe should .shape[0] because now it takes the number of frames
         }
 
     def __len__(self):

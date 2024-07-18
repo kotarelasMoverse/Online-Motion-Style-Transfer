@@ -27,6 +27,8 @@ Currently, a few motion capture clips are stored in `data/xia_test` for basic te
 you can download it from [Google Drive](https://drive.google.com/file/d/1t5kGoCSjT_kaMBrtcggxVXFmH0bxAMuY/view?usp=sharing).
 Then unzip the downloaded `.zip` to `data`
 
+The training/testing dataset is generated through the export_train.py and gen_dataset.sh files. The data generation process takes the .bvh files inside the mocap_xia folder (downloaded from Google Drive) and creates the files xia.npz (used for training/testing). xia.info, and xia_test with some .bvh files for testing. Attention must be paid to the fact that the gen_dataset.sh produces 2 variants of the xia dataset. One with 32-frame clips and a second (enhanced version) with 24-frame clips. The model by default is set up to be trained with 24-frame clips, thus needs the enhanced version by default.
+
 ---
 ### Test
 
@@ -36,6 +38,7 @@ To reproduce the results shown in the paper, you can run the following command:
 ```python
 python3 test.py --load_dir experiments/pretrained_model --target_style proud --input_motion data/xia_test/neutral_01_000_walk.bvh --input_content walk --input_style neutral --no_pos
 ```
+test.py executes the testing for only one motion clip and outputs the motion clip with the new style. It saves them inside the folder 'output_dir/' (same no matter the training run). The script test_multiple.py executes the testing process for all the available motion clips.
 
 ---
 ### Training
@@ -52,6 +55,8 @@ To train the content-classification network used by the content supervision modu
 python3 train.py --train_classifier --n_epoch 1000
 ```
 Then you need to move the best model to `data` and name the saved model as `classifier.pt`
+
+In order to inspect the training/testing losses on tensorboard, use the import_log_from_tensorboard.py, using as argument --experiment_dir the path to the folder containing the training results (e.g. C:\Users\info\Documents\GitHub\Online-Motion-Style-Transfer\experiments\07-10-11-57_seed_58_train_Style_ERD)
 
 ---
 ### Acknowlegements
